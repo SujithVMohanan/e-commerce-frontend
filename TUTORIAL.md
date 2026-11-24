@@ -1,6 +1,6 @@
-# 🚀 Complete React Setup Guide & Beginner Tutorial
+# 🚀 Complete React Setup Guide & Modern Blue E-Commerce Tutorial
 
-A comprehensive, beginner-friendly step-by-step guide to installing, configuring, understanding, and running a modern React project from scratch.
+A comprehensive, beginner-friendly step-by-step guide to installing, configuring, understanding, and running a modern React project from scratch — integrated with the **Modern Blue ("Royal Commerce") Design System** (`D:\e-commerce\stitch_modern_blue_e_commerce_platform`).
 
 ---
 
@@ -13,9 +13,14 @@ A comprehensive, beginner-friendly step-by-step guide to installing, configuring
 6. [Step 5: Run the Development Server](#step-5-run-the-development-server)
 7. [Step 6: Understanding the Folder Structure ("What is this for?")](#step-6-understanding-the-folder-structure-what-is-this-for)
 8. [Step 7: Making Your First Code Change (Hello World)](#step-7-making-your-first-code-change-hello-world)
-9. [Step 8: Recommended Essentials for E-Commerce Frontend](#step-8-recommended-essentials-for-e-commerce-frontend)
-10. [Step 9: Daily Commands Cheat Sheet](#step-9-daily-commands-cheat-sheet)
-11. [Troubleshooting & Common Errors](#troubleshooting--common-errors)
+9. [Step 8: Modern Blue Design System Setup (Common CSS & Common JS)](#step-8-modern-blue-design-system-setup-common-css--common-js)
+   - [8.1 Design System Overview](#81-design-system-overview)
+   - [8.2 Common CSS Setup (Fonts, Tailwind Tokens & Global Styles)](#82-common-css-setup)
+   - [8.3 Common JS Architecture (Utilities, Formatters & Navigation)](#83-common-js-architecture)
+   - [8.4 How Common CSS/JS Connect to React Components](#84-how-common-cssjs-connect-to-react-components)
+10. [Step 9: Recommended Dependencies for E-Commerce](#step-9-recommended-dependencies-for-e-commerce)
+11. [Step 10: Daily Commands Cheat Sheet](#step-10-daily-commands-cheat-sheet)
+12. [Troubleshooting & Common Errors](#troubleshooting--common-errors)
 
 ---
 
@@ -197,17 +202,57 @@ Save the file (`Ctrl + S`). Check your browser — thanks to Vite's **Hot Module
 
 ---
 
-## Step 8: Recommended Essentials for E-Commerce Frontend
+## Step 8: Modern Blue Design System Setup (Common CSS & Common JS)
 
-For building a modern e-commerce user interface, you will typically need these libraries:
+> **Source Design System:** `D:\e-commerce\stitch_modern_blue_e_commerce_platform` (Royal Commerce / Aura Commerce)
+> 
+> **Architecture Principle:** Rather than copying large chunks of raw HTML, we configure the **Common CSS tokens** and **Common JS architecture** once. Every React component then reuses these common styles and utilities automatically.
 
-### 1. Tailwind CSS (Fast & clean styling)
-To add Tailwind CSS to your Vite React project:
+---
+
+### 8.1 Design System Overview
+
+The **Modern Blue** storefront design uses high-contrast luminous layering:
+- **Primary Accent:** Deep Royal Blue (`#00288e` / `#1e40af`) for navigation, conversion buttons, and active states.
+- **Secondary Accent:** Electric Cyan (`#006398` / `#5bb8fe`) for highlights and category filters.
+- **Surfaces:** Clean layered slate tones (`surface: #faf8ff`, `surface-container-low: #f2f3ff`, `surface-container-lowest: #ffffff`).
+- **Typography:** **Plus Jakarta Sans** (Headlines & Prices) + **Inter** (Body & Labels).
+- **Icons:** **Google Material Symbols Outlined** (e.g. `shopping_bag`, `favorite`, `search`, `tune`).
+
+---
+
+### 8.2 Common CSS Setup
+
+#### 1. Link Common Fonts & Icons in `index.html`
+In your project's `index.html`, add the Google Fonts and Material Symbols link tags inside the `<head>` section:
+
+```html
+<!-- Google Fonts: Inter & Plus Jakarta Sans -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+  rel="stylesheet"
+/>
+
+<!-- Google Material Symbols Outlined for UI Icons -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  rel="stylesheet"
+/>
+```
+
+---
+
+#### 2. Configure Tailwind CSS with the Exact Modern Blue Tokens
+Install Tailwind:
 ```bash
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 ```
-Configure `tailwind.config.js`:
+
+Update your `tailwind.config.js` to include the design tokens from `DESIGN.md`:
+
 ```javascript
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -215,43 +260,256 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // Surfaces & Backgrounds
+        "surface": "#faf8ff",
+        "surface-dim": "#d2d9f4",
+        "surface-bright": "#faf8ff",
+        "surface-container-lowest": "#ffffff",
+        "surface-container-low": "#f2f3ff",
+        "surface-container": "#eaedff",
+        "surface-container-high": "#e2e7ff",
+        "surface-container-highest": "#dae2fd",
+        "on-surface": "#131b2e",
+        "on-surface-variant": "#444653",
+        "inverse-surface": "#283044",
+        "inverse-on-surface": "#eef0ff",
+
+        // Primary Brand Tier (Deep Royal Blue)
+        "primary": "#00288e",
+        "on-primary": "#ffffff",
+        "primary-container": "#1e40af",
+        "on-primary-container": "#a8b8ff",
+        "primary-fixed": "#dde1ff",
+        "primary-fixed-dim": "#b8c4ff",
+        "on-primary-fixed": "#001453",
+        "on-primary-fixed-variant": "#173bab",
+
+        // Secondary Accent Tier (Cyan / Blue)
+        "secondary": "#006398",
+        "on-secondary": "#ffffff",
+        "secondary-container": "#5bb8fe",
+        "on-secondary-container": "#00476e",
+        "secondary-fixed": "#cce5ff",
+        "secondary-fixed-dim": "#93ccff",
+        "on-secondary-fixed": "#001d31",
+        "on-secondary-fixed-variant": "#004b73",
+
+        // Tertiary (Warm Accents & Highlights)
+        "tertiary": "#4c2e00",
+        "on-tertiary": "#ffffff",
+        "tertiary-container": "#6b4200",
+        "on-tertiary-container": "#ffa929",
+        "tertiary-fixed": "#ffddb8",
+        "tertiary-fixed-dim": "#ffb95f",
+
+        // Status & Alerts
+        "error": "#ba1a1a",
+        "on-error": "#ffffff",
+        "error-container": "#ffdad6",
+        "on-error-container": "#93000a",
+
+        // Borders & Outlines
+        "outline": "#757684",
+        "outline-variant": "#c4c5d5",
+        "surface-tint": "#3755c3",
+      },
+      fontFamily: {
+        body: ["Inter", "sans-serif"],
+        headline: ["Plus Jakarta Sans", "sans-serif"],
+        "display-xl": ["Plus Jakarta Sans", "sans-serif"],
+        "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
+        "headline-md": ["Plus Jakarta Sans", "sans-serif"],
+        "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+        "price-display": ["Plus Jakarta Sans", "sans-serif"],
+      },
+      spacing: {
+        "space-xs": "0.25rem",  // 4px
+        "space-sm": "0.5rem",   // 8px
+        "space-md": "1rem",     // 16px
+        "space-lg": "1.5rem",   // 24px
+        "space-xl": "2.5rem",   // 40px
+        "gutter-sm": "1rem",    // 16px
+        "gutter": "1.5rem",     // 24px
+        "gutter-lg": "2rem",    // 32px
+        "margin-sm": "1rem",    // 16px
+        "margin": "1.5rem",     // 24px
+        "margin-lg": "3rem",    // 48px
+      },
+      borderRadius: {
+        sm: "0.5rem",
+        DEFAULT: "1rem",        // 16px
+        md: "1.5rem",
+        lg: "2rem",             // 32px
+        xl: "3rem",             // 48px
+        full: "9999px",
+      },
+    },
   },
   plugins: [],
-}
+};
 ```
-Add Tailwind directives to the top of `src/index.css`:
+
+---
+
+#### 3. Global CSS Rules in `src/index.css`
+Update `src/index.css` to inject the global reset, font base, and smooth scrollbar behavior:
+
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #faf8ff;
+    color: #131b2e;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    overscroll-behavior: none;
+  }
+
+  /* Numeric price displays use tabular figures to prevent layout shift */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Hidden sleek scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
 ```
 
-### 2. React Router (Multi-page navigation like /cart, /products, /checkout)
+---
+
+### 8.3 Common JS Architecture
+
+Instead of hardcoding text, navigation items, and helper functions in every file, organize common JavaScript logic in dedicated modules under `src/`:
+
+```text
+src/
+├── constants/
+│   ├── navigation.js     # Nav links, category tabs, and header options
+│   └── themeTokens.js    # Design tokens and color maps for JS usage
+└── utils/
+    ├── formatters.js     # Currency ($), discounts (-35%), and numbers
+    └── cartStorage.js    # LocalStorage helper for cart state
+```
+
+#### 1. Navigation Constants (`src/constants/navigation.js`)
+Stores common navigation items, categories, and top-bar settings:
+
+```javascript
+export const TOP_NAV_CATEGORIES = [
+  { id: "electronics", label: "Electronics & Tech", path: "/catalog?category=electronics" },
+  { id: "audio", label: "Audio & Wearables", path: "/catalog?category=audio" },
+  { id: "fashion", label: "Fashion & Apparel", path: "/catalog?category=fashion" },
+  { id: "home", label: "Home & Living", path: "/catalog?category=home" },
+  { id: "gaming", label: "Computing & Gaming", path: "/catalog?category=gaming" },
+  { id: "deals", label: "Daily Deals", path: "/catalog?deals=true" },
+  { id: "new", label: "New Arrivals", path: "/catalog?sort=new" },
+  { id: "clearance", label: "Clearance Sale", path: "/catalog?deals=clearance" },
+];
+
+export const TOP_BAR_CONFIG = {
+  supportPhone: "+1 800 287 2367",
+  promoBanner: "FREE Express Shipping on orders over $50 | Use code: AURAFIRST for 15% OFF",
+  defaultCurrency: "USD",
+  defaultLanguage: "English",
+};
+```
+
+---
+
+#### 2. Reusable Utility Formatters (`src/utils/formatters.js`)
+Handles formatting currency, discounts, and tabular price representations cleanly:
+
+```javascript
+/**
+ * Formats a number to USD currency (e.g. 349 -> "$349.00")
+ */
+export function formatCurrency(amount, currency = 'USD') {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
+
+/**
+ * Calculates discount percentage string (e.g. 500, 350 -> "-30%")
+ */
+export function getDiscountPercentage(originalPrice, salePrice) {
+  if (!originalPrice || originalPrice <= salePrice) return null;
+  const percent = Math.round(((originalPrice - salePrice) / originalPrice) * 100);
+  return `-${percent}%`;
+}
+```
+
+---
+
+#### 3. Material Symbol Icon Helper Component (`src/components/common/Icon.jsx`)
+Wrap Google Material Symbols into a clean, reusable React component:
+
+```jsx
+export default function Icon({ name, className = '', size = 20, fill = false }) {
+  return (
+    <span
+      className={`material-symbols-outlined select-none inline-flex items-center justify-center ${className}`}
+      style={{
+        fontSize: `${size}px`,
+        fontVariationSettings: fill ? "'FILL' 1" : "'FILL' 0",
+      }}
+    >
+      {name}
+    </span>
+  );
+}
+```
+
+---
+
+### 8.4 How Common CSS/JS Connect to React Components
+
+With the common CSS and JS in place:
+1. **No repetitive styling:** Any React component can use `bg-surface-container-low`, `text-primary`, `rounded-full`, and `p-space-md`.
+2. **Easy Icon Usage:** `<Icon name="shopping_bag" size={24} className="text-primary" />`.
+3. **Consistent Data Flow:** Components iterate over `TOP_NAV_CATEGORIES` rather than repeating links across pages.
+4. **Clean Component Porting:** When translating views (Home, Audio Catalog, Product Details, Checkout) from `stitch_modern_blue_e_commerce_platform`, you simply reference the common styles without touching raw global HTML.
+
+---
+
+## Step 9: Recommended Dependencies for E-Commerce
+
+Install the standard packages used across the storefront:
+
 ```bash
+# Multi-page routing (/cart, /checkout, /catalog)
 npm install react-router-dom
-```
 
-### 3. Lucide Icons (Clean modern icons: shopping cart, search, user, heart)
-```bash
-npm install lucide-react
-```
-
-### 4. Axios (For fetching products & sending orders to your backend API)
-```bash
+# API data fetching (for orders and products)
 npm install axios
 ```
 
 ---
 
-## Step 9: Daily Commands Cheat Sheet
+## Step 10: Daily Commands Cheat Sheet
 
 | Command | What it does | When to use it |
 | :--- | :--- | :--- |
 | `npm run dev` | Starts the local development server | Every time you start working on your project |
 | `npm install <package>` | Installs a new library (e.g. `npm install axios`) | When you need extra tools or icons |
-| `npm run build` | Bundles and minifies code into a `/dist` folder | When you are ready to deploy to production (Vercel, Netlify) |
+| `npm run build` | Bundles and minifies code into a `/dist` folder | When you are ready to deploy to production |
 | `npm run preview` | Previews the production build locally | Before deploying to verify production build works |
 | `npm update` | Updates packages to latest compatible versions | Maintenance |
 
@@ -270,10 +528,10 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 **Reason:** Another instance of Vite is already running.
 **Fix:** Vite will automatically suggest using port 5174 instead. Or close the other terminal running Vite.
 
-### 3. `Failed to resolve import ...`
-**Reason:** You imported a component, image, or CSS file that doesn't exist at the given path.
-**Fix:** Check file spelling and relative paths (e.g., `./components/Navbar.jsx` vs `../components/Navbar.jsx`).
+### 3. Material Symbols Not Showing Up
+**Reason:** The Google Fonts `<link>` tag in `index.html` was missing or blocked.
+**Fix:** Verify that the Material Symbols stylesheet is present inside the `<head>` of `index.html`.
 
 ---
 
-Happy Coding! 🚀 You are now ready to build your React frontend.
+Happy Coding! 🚀 Your React project is set up with the Modern Blue E-Commerce Design System foundation.
